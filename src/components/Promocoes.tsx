@@ -1,4 +1,4 @@
-import { WHATSAPP_RESERVA_URL, RODIZIO_DAYS, RODIZIO_PRICE, RODIZIO_TIME } from '../constants'
+import { WHATSAPP_RESERVA_URL, RODIZIO_DAYS, RODIZIO_TIME } from '../constants'
 
 export default function Promocoes() {
   return (
