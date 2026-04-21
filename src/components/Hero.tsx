@@ -27,7 +27,7 @@ export default function Hero() {
           Pizza
         </h1>
         <h1 className="font-display text-7xl sm:text-8xl md:text-[9rem] leading-none text-white mb-8">
-          da Cidade
+          de Orlândia
         </h1>
 
         <p className="font-body text-white/80 text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
