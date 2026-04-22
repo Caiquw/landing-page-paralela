@@ -1,9 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 const SHEET_ID = process.env.VITE_SHEET_ID
-
-// URL correta para planilhas publicadas com ID do tipo /e/2PACX-...
-const CSV_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`
+const CSV_URL  = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`
 
 export default async function handler(_req: VercelRequest, res: VercelResponse) {
   if (!SHEET_ID) {
@@ -25,10 +23,10 @@ export default async function handler(_req: VercelRequest, res: VercelResponse) 
       })
     }
 
-    const pizzas = parseCSV(text)
+    const items = parseCSV(text)
 
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate')
-    return res.status(200).json(pizzas)
+    return res.status(200).json(items)
 
   } catch (err) {
     return res.status(500).json({ error: 'Erro ao buscar planilha.' })
@@ -54,11 +52,14 @@ function parseCSV(text: string) {
       return cols
     })
 
+  // Cabeçalho esperado: Nome | Descrição | Categoria | Preço | Tag | ImagemURL
   return rows.slice(1).map((cols, i) => ({
     id:          String(i),
     name:        cols[0]?.trim() ?? '',
     description: cols[1]?.trim() ?? '',
-    tag:         cols[2]?.trim() ?? '',
-    imageUrl:    cols[3]?.trim() ?? '',
+    category:    cols[2]?.trim() ?? '',
+    price:       cols[3]?.trim() ?? '',
+    tag:         cols[4]?.trim() ?? '',
+    imageUrl:    cols[5]?.trim() ?? '',
   })).filter((p) => p.name !== '')
 }
