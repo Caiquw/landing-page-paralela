@@ -7,7 +7,6 @@ export interface PizzaItem {
 }
 
 export async function fetchPizzas(): Promise<PizzaItem[]> {
-  // Chama a API route da Vercel — sem CORS, sem bloqueio do Google
   const res = await fetch('/api/cardapio')
 
   if (!res.ok) {
