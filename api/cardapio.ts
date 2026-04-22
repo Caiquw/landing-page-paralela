@@ -1,10 +1,9 @@
-// api/cardapio.ts
-// Roda no servidor da Vercel — sem CORS, sem bloqueio do Google
-
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 const SHEET_ID = process.env.VITE_SHEET_ID
-const CSV_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/pub?output=csv`
+
+// URL correta para planilhas publicadas com ID do tipo /e/2PACX-...
+const CSV_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`
 
 export default async function handler(_req: VercelRequest, res: VercelResponse) {
   if (!SHEET_ID) {
@@ -28,11 +27,10 @@ export default async function handler(_req: VercelRequest, res: VercelResponse) 
 
     const pizzas = parseCSV(text)
 
-    // Cache de 5 minutos na CDN da Vercel
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate')
     return res.status(200).json(pizzas)
 
-  } catch {
+  } catch (err) {
     return res.status(500).json({ error: 'Erro ao buscar planilha.' })
   }
 }
@@ -48,7 +46,7 @@ function parseCSV(text: string) {
 
       for (let i = 0; i < line.length; i++) {
         const ch = line[i]
-        if (ch === '"')              inQuotes = !inQuotes
+        if (ch === '"')                   inQuotes = !inQuotes
         else if (ch === ',' && !inQuotes) { cols.push(cur); cur = '' }
         else                              cur += ch
       }
@@ -56,7 +54,6 @@ function parseCSV(text: string) {
       return cols
     })
 
-  // Pula o cabeçalho
   return rows.slice(1).map((cols, i) => ({
     id:          String(i),
     name:        cols[0]?.trim() ?? '',
