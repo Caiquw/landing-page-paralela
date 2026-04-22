@@ -5,7 +5,7 @@ const CSV_URL  = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?outpu
 
 export default async function handler(_req: VercelRequest, res: VercelResponse) {
   if (!SHEET_ID) {
-    return res.status(500).json({ error: 'VITE_SHEET_ID não configurado.' })
+    return res.status(500).json({ error: 'SHEET_ID não configurado.' })
   }
 
   try {
