@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
-const SHEET_ID = process.env.VITE_SHEET_ID
+const SHEET_ID = process.env.SHEET_ID
 const CSV_URL  = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`
 
 export default async function handler(_req: VercelRequest, res: VercelResponse) {
