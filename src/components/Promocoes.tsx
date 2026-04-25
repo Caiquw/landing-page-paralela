@@ -1,9 +1,37 @@
+import { useEffect, useState } from 'react'
 import { WHATSAPP_RESERVA_URL, RODIZIO_DAYS, RODIZIO_TIME } from '../constants'
 
+interface RodizioConfig {
+  Dias:     string
+  Horario:  string
+  Preco:    string
+  Descricao: string
+  AniversarianteTexto: string
+}
+
+const FALLBACK: RodizioConfig = {
+  Dias:                RODIZIO_DAYS,
+  Horario:             RODIZIO_TIME,
+  Preco:               '45,90',
+  Descricao:           'Pizza à vontade com as melhores combinações da casa',
+  AniversarianteTexto: 'Aniversariante com 6+ pagantes não paga o rodízio',
+}
+
 export default function Promocoes() {
+  const [config, setConfig] = useState<RodizioConfig>(FALLBACK)
+
+  useEffect(() => {
+    fetch('/api/rodizio')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && !data.error) setConfig({ ...FALLBACK, ...data })
+      })
+      .catch(() => {/* mantém fallback */})
+  }, [])
+
   return (
     <section id="promocoes" className="relative py-0 overflow-hidden">
-      {/* Background image + overlay */}
+      {/* Background */}
       <div className="absolute inset-0">
         <img
           src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=1600&q=80"
@@ -14,7 +42,7 @@ export default function Promocoes() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12 items-center">
-        {/* Left: text */}
+        {/* Left: texto */}
         <div className="reveal text-white">
           <span className="font-heading text-brand-yellow text-sm uppercase tracking-[0.3em] font-semibold">
             Promoção especial
@@ -31,20 +59,18 @@ export default function Promocoes() {
             <li className="flex items-center gap-3 text-lg">
               <span className="text-brand-yellow text-xl">📅</span>
               <span>
-                <strong className="font-heading">{RODIZIO_DAYS}</strong> — toda semana
+                <strong className="font-heading">{config.Dias}</strong> — toda semana
               </span>
             </li>
             <li className="flex items-center gap-3 text-lg">
               <span className="text-brand-yellow text-xl">⏰</span>
               <span>
-                <strong className="font-heading">{RODIZIO_TIME}</strong>
+                <strong className="font-heading">{config.Horario}</strong>
               </span>
             </li>
             <li className="flex items-center gap-3 text-lg">
               <span className="text-brand-yellow text-xl">🎂</span>
-              <span>
-                Aniversariante com <strong className="font-heading">6+ pagantes</strong> não paga o rodízio
-              </span>
+              <span>{config.AniversarianteTexto}</span>
             </li>
           </ul>
 
@@ -58,23 +84,28 @@ export default function Promocoes() {
           </a>
         </div>
 
-        {/* Right: price card */}
+        {/* Right: card de preço */}
         <div className="reveal flex justify-center md:justify-end">
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 text-white text-center px-12 py-14 shadow-2xl max-w-xs w-full">
             <span className="font-heading text-sm uppercase tracking-[0.3em] text-brand-yellow block mb-4">
               Apenas
             </span>
+
             <div className="font-display leading-none">
               <span className="text-3xl align-top mt-4 inline-block">R$</span>
-              <span className="text-8xl text-brand-yellow">45</span>
-              <span className="text-4xl">,90</span>
+              <span className="text-8xl text-brand-yellow">
+                {config.Preco.split(',')[0]}
+              </span>
+              <span className="text-4xl">,{config.Preco.split(',')[1] ?? '90'}</span>
             </div>
+
             <span className="font-heading text-sm uppercase tracking-widest text-white/70 block mt-3">
               por pessoa
             </span>
+
             <div className="mt-8 pt-6 border-t border-white/20">
               <p className="font-body text-sm text-white/70 leading-relaxed">
-                Pizza à vontade com as melhores combinações da casa
+                {config.Descricao}
               </p>
             </div>
           </div>
