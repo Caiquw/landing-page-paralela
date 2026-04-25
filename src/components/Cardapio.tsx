@@ -36,7 +36,7 @@ const FALLBACK: CardapioItem[] = [
   { id: '16', name: 'Borda de Catupiry',     description: 'Borda recheada com catupiry original.',                           category: 'Bordas',                 price: '12,00', tag: '',         imageUrl: '' },
 ]
 
-const PLACEHOLDER = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80'
+
 
 // ─── Componente principal ────────────────────────────────────────────────────
 export default function Cardapio() {
@@ -164,8 +164,6 @@ export default function Cardapio() {
 
 // ─── Card individual ─────────────────────────────────────────────────────────
 function MenuCard({ item, index }: { item: CardapioItem; index: number }) {
-  const imgSrc = item.imageUrl || PLACEHOLDER
-
   const waMessage = encodeURIComponent(
     `Olá! Vim pelo site e gostaria de pedir: *${item.name}*`
   )
@@ -176,23 +174,30 @@ function MenuCard({ item, index }: { item: CardapioItem; index: number }) {
       className="card-reveal group flex flex-col bg-white border border-brand-gray shadow-sm hover:shadow-lg transition-all duration-300"
       style={{ transitionDelay: `${index * 60}ms` }}
     >
-      {/* Imagem */}
-      <div className="relative overflow-hidden h-48">
-        <img
-          src={imgSrc}
-          alt={item.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER }}
-        />
-        {item.tag && (
-          <span className="absolute top-3 left-3 bg-brand-red text-white font-heading text-xs uppercase tracking-widest px-3 py-1">
-            {item.tag}
-          </span>
-        )}
-      </div>
+      {/* Imagem — só renderiza se tiver URL */}
+      {item.imageUrl && (
+        <div className="relative overflow-hidden h-48">
+          <img
+            src={item.imageUrl}
+            alt={item.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+          {item.tag && (
+            <span className="absolute top-3 left-3 bg-brand-red text-white font-heading text-xs uppercase tracking-widest px-3 py-1">
+              {item.tag}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Conteúdo */}
       <div className="flex flex-col flex-1 p-5">
+        {/* Tag aparece aqui quando não tem imagem */}
+        {item.tag && !item.imageUrl && (
+          <span className="self-start bg-brand-red text-white font-heading text-xs uppercase tracking-widest px-3 py-1 mb-3">
+            {item.tag}
+          </span>
+        )}
         <h3 className="font-heading text-lg font-bold text-brand-dark uppercase tracking-wide mb-1">
           {item.name}
         </h3>
