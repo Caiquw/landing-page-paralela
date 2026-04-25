@@ -7,6 +7,10 @@ const GID      = process.env.RODIZIO_GID ?? '1' // ID da aba "Rodizio" na planil
 const CSV_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv&gid=${GID}`
 
 export default async function handler(_req: VercelRequest, res: VercelResponse) {
+  console.log('SHEET_ID:', process.env.SHEET_ID)
+  console.log('RODIZIO_GID:', process.env.RODIZIO_GID)
+  console.log('CSV_URL:', CSV_URL)
+
   if (!SHEET_ID) {
     return res.status(500).json({ error: 'SHEET_ID não configurado.' })
   }
