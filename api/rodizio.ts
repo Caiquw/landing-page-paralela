@@ -9,10 +9,16 @@ const CSV_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output
 export default async function handler(_req: VercelRequest, res: VercelResponse) {
   console.log('SHEET_ID:', process.env.SHEET_ID)
   console.log('RODIZIO_GID:', process.env.RODIZIO_GID)
-  console.log('CSV_URL:', CSV_URL)
 
   if (!SHEET_ID) {
-    return res.status(500).json({ error: 'SHEET_ID não configurado.' })
+    return res.status(500).json({
+      error: 'SHEET_ID não configurado.',
+      debug: {
+        SHEET_ID: process.env.SHEET_ID ?? 'undefined',
+        RODIZIO_GID: process.env.RODIZIO_GID ?? 'undefined',
+        ALL_KEYS: Object.keys(process.env).filter(k => k.includes('SHEET') || k.includes('RODIZIO')),
+      }
+    })
   }
 
   try {
