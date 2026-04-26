@@ -239,5 +239,10 @@ function getCategories(items: CardapioItem[]): string[] {
   const seen = new Set<string>()
   return items
     .map((i) => i.category)
-    .filter((cat) => { if (seen.has(cat)) return false; seen.add(cat); return true })
+    .filter((cat) => {
+      if (cat === 'RODIZIO_CONFIG') return false
+      if (seen.has(cat)) return false
+      seen.add(cat)
+      return true
+    })
 }
